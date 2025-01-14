@@ -1,8 +1,12 @@
+const productModel = require('../modules/product')
+
 module.exports = {
 
     getAll:(req,res) => {
         try{
-            return res.status(200).json({msg : "all products"});
+            productModel.find().then((products)=>{
+                return res.status(200).json(products);
+            });
         }
         catch{
             return res.status(500).json({msg : "500 server error"});
@@ -10,7 +14,9 @@ module.exports = {
     },
     getByID:(req,res) => {
         try{
-            return res.status(200).json({msg : `product ${req.params.id}`});
+            productModel.find({pid:req.params.id}).then((product)=>{
+                return res.status(200).json(product);
+            });
         }
         catch{
             return res.status(500).json({msg : "500 server error"});
@@ -18,23 +24,30 @@ module.exports = {
     },
     updateById:(req,res) => {
         try{
-            return res.status(200).json({msg : `product ${req.params.id} updated`});
+            productModel.updateOne({pID:req.params.id},req.body).then((data) =>{
+                return res.status(200).json(data);
+            });
         }
         catch{
             return res.status(500).json({msg : "500 server error"});
         }
     },
-    postNew:(req,res) => {
+    postNew: (req, res) => {
         try{
-            return res.status(200).json({msg : "product added"});
+            productModel.insertMany([req.body]).then((data)=>{
+                return res.status(200).json(data)
+            });
         }
         catch{
             return res.status(500).json({msg : "500 server error"});
         }
     },
+    
     deleteById:(req,res) => {
         try{
-            return res.status(200).json({msg : `product ${req.params.id} deleted`});
+            productModel.deleteOne({pID:req.params.id}).then((data)=>{
+                return res.status(200).json(data);
+            });
         }
         catch{
             return res.status(500).json({msg : "500 server error"});
